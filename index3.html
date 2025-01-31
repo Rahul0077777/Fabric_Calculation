@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fabric Shrinkage Calculator</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        label {
+          
+            display: block;
+            margin: 10px 0 5px;
+        }
+
+        input, select, textarea, button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background: #0056b3;
+            transform: scale(1.05); /* Slightly enlarge the button */
+        }
+
+        button:focus {
+            outline: none;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.6); /* Add focus ring effect */
+        }
+
+        button:active {
+            background: #004085;
+            transform: scale(0.98); /* Slightly shrink when pressed */
+        }
+
+        .clear-btn {
+            background: #dc3545;
+        }
+
+        .clear-btn:hover {
+            background: #b32d3a;
+            transform: scale(1.05);
+        }
+
+        .clear-btn:active {
+            background: #9e2a47;
+            transform: scale(0.98);
+        }
+
+        textarea {
+            resize: none;
+            min-height: 100px;
+            overflow: hidden;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 480px) {
+            .container {
+                max-width: 100%;
+            }
+
+            .grid-container {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .btn-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Fabric Shrinkage Calculator</h2>
+
+        <div class="grid-container">
+            <div>
+                <input type="text" id="fabric" placeholder=" Enter Fabric">
+            </div>
+            <div>
+                
+                <select id="washType">
+                    <option value="Raw Wash">Raw Wash</option>
+                    <option value="Stone Wash">Stone Wash</option>
+                    <option value="Mineral Wash">Mineral Wash</option>
+                    <option value="Vintage Wash">Vintage Wash</option>
+                    <option value="Acid Wash">Acid Wash</option>
+                    <option value="Snow Wash">Snow Wash</option>
+                    <option value="Enzyme Wash">Enzyme Wash</option>
+                    <option value="Sand Wash">Sand Wash</option>
+                    <option value="Silicone Wash">Silicone Wash</option>
+                </select>
+            </div>
+        </div>
+
+        <label for="calcType">Select Calculation Type:</label>
+        <select id="calcType">
+            <option value="increase">Fabric % Increase</option>
+            <option value="decrease">Fabric % Decrease</option>
+        </select>
+
+        <div class="grid-container">
+            <div>
+                <label for="bwWidth">BW Square Width:</label>
+                <input type="number" id="bwWidth">
+            </div>
+            <div>
+                <label for="bwLength">BW Square Length:</label>
+                <input type="number" id="bwLength">
+            </div>
+            <div>
+                <label for="awWidth">AW Square Width:</label>
+                <input type="number" id="awWidth">
+            </div>
+            <div>
+                <label for="awLength">AW Square Length:</label>
+                <input type="number" id="awLength">
+            </div>
+        </div>
+
+        <label for="result">Calculation Result:</label>
+        <textarea id="result" readonly></textarea>
+
+        <div class="btn-group">
+            <button onclick="calculate()">Calculate</button>
+            <button class="clear-btn" onclick="clearForm()">Clear</button>
+        </div>
+    </div>
+
+    <script>
+        function calculate() {
+            let calcType = document.getElementById("calcType").value;
+            let washType = document.getElementById("washType").value;
+            let bwWidth = parseFloat(document.getElementById("bwWidth").value);
+            let bwLength = parseFloat(document.getElementById("bwLength").value);
+            let awWidth = parseFloat(document.getElementById("awWidth").value);
+            let awLength = parseFloat(document.getElementById("awLength").value);
+            let resultBox = document.getElementById("result");
+
+            if (isNaN(bwWidth) || isNaN(bwLength) || isNaN(awWidth) || isNaN(awLength)) {
+                resultBox.value = "Please enter valid numbers for all fields.";
+                return;
+            }
+
+            let widthChange = ((awWidth - bwWidth) / bwWidth) * 100;
+            let lengthChange = ((awLength - bwLength) / bwLength) * 100;
+            let resultText = "";
+
+            if (calcType === "increase") {
+                resultText = `Fabric Increased by:\nWidth: ${widthChange.toFixed(2)}%\nLength: ${lengthChange.toFixed(2)}%\n\nFormula Used:\n((After Wash - Before Wash) / Before Wash) * 100`;
+            } else {
+                resultText = `Fabric Shrinkage:\nWidth: ${Math.abs(widthChange).toFixed(2)}%\nLength: ${Math.abs(lengthChange).toFixed(2)}%\n\nFormula Used:\n((Before Wash - After Wash) / Before Wash) * 100`;
+            }
+
+            resultBox.value = resultText;
+            autoResizeTextarea(resultBox); 
+        }
+
+        function clearForm() {
+            document.getElementById("fabric").value = "";
+            document.getElementById("washType").value = "Raw Wash";
+            document.getElementById("calcType").value = "increase";
+            document.getElementById("bwWidth").value = "";
+            document.getElementById("bwLength").value = "";
+            document.getElementById("awWidth").value = "";
+            document.getElementById("awLength").value = "";
+            document.getElementById("result").value = "";
+        }
+
+        function autoResizeTextarea(textarea) {
+            textarea.style.height = "auto";
+            textarea.style.height = (textarea.scrollHeight) + "px";
+        }
+    </script>
+</body>
+</html>
